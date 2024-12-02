@@ -5,9 +5,10 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function HomeScreen() {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
@@ -19,15 +20,12 @@ export default function HomeScreen() {
   };
 
   // Function to handle date selection
-  const handleDateConfirm = (date: any) => {
-    setSelectedDate(date);
-    setDatePickerVisible(false);
-    console.log("Selected date:", date);
-  };
-
-  // Function to hide the date picker
-  const hideDatePicker = () => {
-    setDatePickerVisible(false);
+  const handleDateConfirm = (event, date) => {
+    if (date) {
+      setSelectedDate(date);
+      console.log("Selected date:", date);
+    }
+    setDatePickerVisible(false); // Close the picker
   };
 
   // Dummy data for income/expenses
@@ -88,18 +86,15 @@ export default function HomeScreen() {
         )}
       />
 
-      {/* Floating Add Button */}
-      {/* <TouchableOpacity style={styles.addButton}>
-        <Ionicons name="add" size={30} color="#FFF" />
-      </TouchableOpacity> */}
-
-      {/* Date Picker Modal */}
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleDateConfirm}
-        onCancel={hideDatePicker}
-      />
+      {/* Date Picker */}
+      {isDatePickerVisible && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={handleDateConfirm}
+        />
+      )}
     </View>
   );
 }
@@ -133,12 +128,12 @@ const styles = StyleSheet.create({
   },
   summaryTitle: {
     fontSize: 14,
-    color: "#black",
+    color: "black",
   },
   summaryValue: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#black",
+    color: "black",
     marginTop: 5,
   },
   listItem: {
@@ -156,20 +151,5 @@ const styles = StyleSheet.create({
   itemAmount: {
     fontSize: 16,
     fontWeight: "bold",
-  },
-  addButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#FFD948",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
   },
 });
